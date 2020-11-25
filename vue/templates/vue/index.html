@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+
+	<head>
+		<meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Bootstrap -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <!-- Vue.js -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <!-- Axios -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js" integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ==" crossorigin="anonymous"></script>
+
+        
+        <title> Index </title>
+
+
+<style>
+    body {
+        background-color: rgb(50, 119, 17, 0.5);
+        margin-top:30px;
+    }
+</style>
+
+	</head>
+
+	<body class="container">
+    <script>
+        const poulets = {{ poulets | safe }}
+    </script>
+
+<div id="app">
+
+    <div class="row">
+        <h1 class="col-md-12">Pouleterie fermière</h1>
+        <div v-if="(message != '')" class="alert-info col-md-6" :message="message">[[message]]</div>
+
+    </div>
+    <div class="row">
+        <div style="border: solid black 2px; padding:5px;" class="col-md-6">
+            Nouveau Poulet :
+            <br>
+            <form action="">
+                <input v-model="nom" type="text" placeholder="nom">
+                <input v-model="poids" type="number" min="0" placeholder="poids">
+                <button class="btn btn-success btn-sm" @click.prevent="validation()">valider</button>
+            </form>
+        </div>
+
+    </div>
+    <hr>
+    <div class="row">
+        <h2 class="col-md-12">Les poulets encore vaillants</h2>
+        <table class="table table-bordered table-striped col-md-6">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Poids</th>
+                    <th>Zigouiller</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr :poulets="poulets" :poulet="poulet" v-for="poulet in poulets">
+                    <td class="col-md-4">[[poulet.nom]]</td>
+                    <td class="col-md-2">[[poulet.poids]]</td>
+                    <td class="col-md-2" style="text-align:center;"><button @click.prevent="kill(poulet.id)" class="btn btn-danger">Tuer !</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+const vm = new Vue({
+    el:"#app",
+    data(){
+        return {
+            poulets: poulets,
+            nom:"",
+            poids:0,
+            message:"",
+        }
+    },
+    delimiters:['[[',']]'],
+    methods:{
+        validation(){
+            console.log(this.nom, this.poids)
+            axios({
+                method : "POST",
+                url:"{% url 'index' %}", //django path name
+                headers: {'X-CSRFTOKEN': '{{ csrf_token }}', 'Content-Type': 'application/json'},
+                data : {"nom":this.nom, "poids":this.poids},//data
+                }).then(response => {
+                    this.message = response.data['msg'];
+                    this.poulets = response.data['poulets'];
+                    this.nom = "";
+                    this.poids = 0;
+                    console.log(this.message)
+                    
+                }).catch(err => {
+                    this.message = err.response.data['err'];
+                    console.log(this.message)
+                });
+        },
+        kill(pouletId){
+            console.log("tuer ",pouletId)
+            axios({
+                method : "DELETE",
+                url:"{% url 'index' %}", //django path name
+                headers: {'X-CSRFTOKEN': '{{ csrf_token }}', 'Content-Type': 'application/json'},
+                data : {"id":pouletId},//data
+                }).then(response => {
+                    this.message = response.data['msg'];
+                    this.poulets = response.data['poulets'];
+                    this.nom = "";
+                    this.poids = 0;
+                    console.log(this.message)
+                    
+                }).catch(err => {
+                    this.message = err.response.data['err'];
+                    console.log(this.message)
+                });
+        },
+    },
+})
+
+</script>
+
+
+	</body>
+</html>
