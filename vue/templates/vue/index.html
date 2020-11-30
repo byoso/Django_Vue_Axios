@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -15,7 +17,8 @@
         <!-- Axios -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js" integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ==" crossorigin="anonymous"></script>
 
-        
+
+        <link rel="stylesheet" href="{% static 'css/myStyleBS.css' %}">
         <title> Index </title>
 
 
@@ -42,8 +45,14 @@
     </div>
     <div class="row">
         <div style="border: solid black 2px; padding:5px;" class="col-md-6">
-            Nouveau Poulet :
-            <br>
+            <span class="infobulle">
+                <span>
+                    Nouveau Poulet <sup>(?)</sup>:
+                </span>
+                <span class="bulle">
+                    Le poids peut rester à zéro
+                </span>
+            </span>
             <form action="">
                 <input v-model="nom" type="text" placeholder="nom">
                 <input v-model="poids" type="number" min="0" placeholder="poids">

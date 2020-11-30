@@ -1,0 +1,46 @@
+
+.infobulle {
+    cursor:help;
+}
+.infobulle:hover > .bulle{
+    /* transform: scale(1); */
+    visibility: visible;
+    opacity:1;
+}
+
+.bulle{
+    margin-top:8px;
+    /* transform: scale(0); */
+    visibility: hidden;
+    opacity:0;
+    position: absolute;
+    text-decoration: none;
+    transition: 0.5s;
+    background-color:white;
+    padding: 8px;
+    border-radius:5px;
+    box-shadow: -4px 4px 4px 1px rgba(128,128,128,0.5);
+    border: 2px solid grey;
+}
+
+.bulle::before{
+    font-weight: bold;
+    text-align: center;
+    margin-left:-17px;
+    margin-right:auto;
+    width:32px;
+    content:"?";
+    position:absolute;
+    margin-top:-30px;
+    background-color: lightblue;
+    border:2px solid grey;
+    padding: 2px;
+    border-radius:40px;
+    box-shadow: -4px 4px 4px 1px rgba(128,128,128,0.5);
+    white-space: nowrap;
+}
+.bulle-titre{
+    font-weight: bold;
+    background-color: rgba(0,0,0,0.05);
+    padding:5px;
+}
